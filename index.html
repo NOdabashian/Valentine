@@ -53,29 +53,34 @@
             z-index: 10;
         }
 
-        h1 { font-size: 2.2rem; margin: 0 0 10px 0; color: var(--deep-purple); }
+        h1 { font-size: 2rem; margin: 0 0 15px 0; color: var(--deep-purple); line-height: 1.2; }
         .sub-text { color: #8a2be2; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 20px; }
         
-        .instruction { font-size: 1rem; color: #6b21a8; margin-bottom: 30px; }
+        .instruction { font-size: 1rem; color: #6b21a8; margin-bottom: 30px; line-height: 1.5; }
 
         .btn-container { 
             display: flex; 
             justify-content: center; 
-            gap: 20px;
+            gap: 15px;
             margin-top: 20px; 
-            height: 60px; 
+            height: 65px; 
             align-items: center;
         }
 
         button { 
-            padding: 14px 24px; 
+            padding: 12px 20px; 
             border: none; 
             border-radius: 50px; 
             cursor: pointer; 
             font-weight: bold; 
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
+        .btn-sub { font-size: 0.65rem; font-weight: normal; opacity: 0.8; margin-top: 2px; }
 
         #yesBtn { 
             background: var(--deep-purple); 
@@ -141,25 +146,31 @@
 </head>
 <body>
 
-<div id="error-msg">⚠️ SECTION OVERBOOKED</div>
+<div id="error-msg">⚠️ SECTION UNAVAILABLE</div>
 
 <div id="main-card">
     <div id="init-screen">
-        <div class="sub-text">Valentine Air - Priority Check-In</div>
-        <h1>Hi Katie! ✈️</h1>
-        <p class="instruction">Your <strong>PHL ➔ TPA</strong> flight is approaching. Please confirm your arrival tier:</p>
+        <div class="sub-text">Special Arrival Request</div>
+        <h1>Katie,<br>Will You Be My Valentine?</h1>
+        <p class="instruction">I am so excited for you to fly down. Please select your official arrival status below:</p>
         
         <div class="btn-container">
-            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">Standard Economy</button>
-            <button id="yesBtn" onclick="acceptInvitation()">First Class Valentine</button>
+            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">
+                <span>NO</span>
+                <span class="btn-sub">Standard Economy</span>
+            </button>
+            <button id="yesBtn" onclick="acceptInvitation()">
+                <span>YES!</span>
+                <span class="btn-sub">First Class Valentine</span>
+            </button>
         </div>
     </div>
 
     <div id="boardingPass">
-        <h2 style="color: var(--deep-purple); margin: 0;">Reservation Confirmed! ❤️</h2>
+        <h2 style="color: var(--deep-purple); margin: 0;">Status: Locked In! ❤️</h2>
         <div class="ticket-box">
             <div class="ticket-line"><span class="label">Passenger</span> <strong>KATIE</strong></div>
-            <div class="ticket-line"><span class="label">Status</span> <strong>VALENTINE: LOCKED IN</strong></div>
+            <div class="ticket-line"><span class="label">Status</span> <strong>OFFICIAL VALENTINE</strong></div>
             <div class="ticket-line"><span class="label">From/To</span> <strong>PHL ➔ TPA</strong></div>
             <div class="ticket-line"><span class="label">Arriving</span> <strong>11:30 AM</strong></div>
         </div>
@@ -169,13 +180,12 @@
         </div>
         
         <p id="final-message" style="margin-top: 15px; font-weight: bold; color: #5a189a; font-size: 1.1rem;">
-            I can't wait to have you back in Florida!
+            I can't wait to see you at the gate!
         </p>
     </div>
 </div>
 
 <script>
-    // Create floating hearts
     function createHearts() {
         for(let i=0; i<15; i++) {
             let heart = document.createElement('div');
@@ -221,7 +231,6 @@
     }
 
     function playMusic() {
-        // High-quality acoustic/piano valentine vibe
         const audio = new Audio('https://www.bensound.com/bensound-music/bensound-love.mp3');
         audio.loop = true;
         audio.volume = 0.4;
