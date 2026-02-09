@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Priority Arrival: Katie</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary-pink: #ff85a2;
             --deep-purple: #7b2cbf;
-            --soft-white: #fff5f7;
             --gold: #d4af37;
         }
 
@@ -22,7 +21,8 @@
             justify-content: center; 
             height: 100vh; 
             overflow: hidden; 
-            margin: 0; 
+            margin: 0;
+            touch-action: manipulation; /* Prevents double-tap zoom delay */
         }
 
         .heart {
@@ -33,6 +33,7 @@
             z-index: 0;
             animation: float 6s infinite linear;
             opacity: 0.6;
+            pointer-events: none;
         }
 
         @keyframes float {
@@ -49,21 +50,22 @@
             box-shadow: 0 20px 50px rgba(255, 133, 162, 0.4); 
             text-align: center; 
             max-width: 480px; 
+            width: 85%;
             position: relative; 
             z-index: 10;
         }
 
-        h1 { font-size: 2rem; margin: 0 0 15px 0; color: var(--deep-purple); line-height: 1.2; }
-        .sub-text { color: #8a2be2; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 20px; }
+        h1 { font-size: 1.8rem; margin: 0 0 15px 0; color: var(--deep-purple); line-height: 1.2; }
+        .sub-text { color: #8a2be2; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; margin-bottom: 20px; }
         
-        .instruction { font-size: 1rem; color: #6b21a8; margin-bottom: 30px; line-height: 1.5; }
+        .instruction { font-size: 0.95rem; color: #6b21a8; margin-bottom: 30px; line-height: 1.5; }
 
         .btn-container { 
             display: flex; 
             justify-content: center; 
             gap: 15px;
             margin-top: 20px; 
-            height: 65px; 
+            height: 70px; 
             align-items: center;
         }
 
@@ -74,18 +76,21 @@
             cursor: pointer; 
             font-weight: bold; 
             font-size: 0.85rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .btn-sub { font-size: 0.65rem; font-weight: normal; opacity: 0.8; margin-top: 2px; }
+        .btn-sub { font-size: 0.6rem; font-weight: normal; opacity: 0.8; margin-top: 2px; }
 
         #yesBtn { 
             background: var(--deep-purple); 
             color: white; 
             animation: pulse 2s infinite;
+            z-index: 100;
         }
 
         @keyframes pulse {
@@ -99,6 +104,7 @@
             color: #ff4d4d; 
             border: 2px solid #ff4d4d;
             position: relative;
+            z-index: 50;
         }
 
         #boardingPass { 
@@ -112,23 +118,23 @@
             text-align: left; 
             background: linear-gradient(135deg, #5a189a 0%, #3c096c 100%);
             color: white;
-            padding: 20px; 
+            padding: 18px; 
             border-radius: 20px; 
             border: 2px solid var(--gold);
             margin-top: 15px;
         }
 
-        .ticket-line { display: flex; justify-content: space-between; margin: 8px 0; font-family: 'Courier New', monospace; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 4px; }
-        .label { color: #d8b4fe; font-size: 0.7rem; text-transform: uppercase; }
+        .ticket-line { display: flex; justify-content: space-between; margin: 8px 0; font-family: 'Courier New', monospace; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 4px; font-size: 0.85rem; }
+        .label { color: #d8b4fe; font-size: 0.65rem; text-transform: uppercase; }
         
         #countdown-timer {
             margin-top: 20px;
             font-weight: bold;
             color: var(--deep-purple);
             background: #f3e8ff;
-            padding: 10px;
+            padding: 12px;
             border-radius: 10px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         #error-msg {
@@ -137,25 +143,26 @@
             color: white;
             padding: 5px 12px;
             border-radius: 5px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             display: none;
-            z-index: 100;
+            z-index: 1000;
             pointer-events: none;
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
-<div id="error-msg">⚠️ SECTION UNAVAILABLE</div>
+<div id="error-msg">⚠️ SECTION OVERBOOKED</div>
 
 <div id="main-card">
     <div id="init-screen">
         <div class="sub-text">Special Arrival Request</div>
         <h1>Katie,<br>Will You Be My Valentine?</h1>
-        <p class="instruction">I am so excited for you to fly down. Please select your official arrival status below:</p>
+        <p class="instruction">I'm so excited for you to fly down. Please select your official arrival status:</p>
         
         <div class="btn-container">
-            <button id="noBtn" onmouseover="moveButton()" onclick="moveButton()">
+            <button id="noBtn">
                 <span>NO</span>
                 <span class="btn-sub">Standard Economy</span>
             </button>
@@ -167,11 +174,11 @@
     </div>
 
     <div id="boardingPass">
-        <h2 style="color: var(--deep-purple); margin: 0;">Status: Locked In! ❤️</h2>
+        <h2 style="color: var(--deep-purple); margin: 0; font-size: 1.5rem;">Status: Locked In! ❤️</h2>
         <div class="ticket-box">
             <div class="ticket-line"><span class="label">Passenger</span> <strong>KATIE</strong></div>
             <div class="ticket-line"><span class="label">Status</span> <strong>OFFICIAL VALENTINE</strong></div>
-            <div class="ticket-line"><span class="label">From/To</span> <strong>PHL ➔ TPA</strong></div>
+            <div class="ticket-line"><span class="label">Route</span> <strong>PHL ➔ TPA</strong></div>
             <div class="ticket-line"><span class="label">Arriving</span> <strong>11:30 AM</strong></div>
         </div>
         
@@ -179,13 +186,14 @@
             T-MINUS: <span id="timer-text">--:--:--</span>
         </div>
         
-        <p id="final-message" style="margin-top: 15px; font-weight: bold; color: #5a189a; font-size: 1.1rem;">
+        <p id="final-message" style="margin-top: 15px; font-weight: bold; color: #5a189a; font-size: 1rem;">
             I can't wait to see you at the gate!
         </p>
     </div>
 </div>
 
 <script>
+    // Create floating hearts
     function createHearts() {
         for(let i=0; i<15; i++) {
             let heart = document.createElement('div');
@@ -199,18 +207,28 @@
     }
     createHearts();
 
-    function moveButton() {
-        const btn = document.getElementById('noBtn');
+    const noBtn = document.getElementById('noBtn');
+    
+    function moveButton(e) {
+        if(e) e.preventDefault();
         const error = document.getElementById('error-msg');
-        btn.style.position = 'fixed';
-        const x = Math.random() * (window.innerWidth - 150);
-        const y = Math.random() * (window.innerHeight - 50);
-        btn.style.left = x + 'px';
-        btn.style.top = y + 'px';
+        noBtn.style.position = 'fixed';
+        
+        const padding = 100;
+        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - padding) + (padding/2);
+        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - padding) + (padding/2);
+        
+        noBtn.style.left = x + 'px';
+        noBtn.style.top = y + 'px';
+        
         error.style.display = 'block';
         error.style.left = x + 'px';
-        error.style.top = (y - 30) + 'px';
+        error.style.top = (y - 35) + 'px';
     }
+
+    // Desktop hover & Mobile touch for the "No" button
+    noBtn.addEventListener('mouseover', moveButton);
+    noBtn.addEventListener('touchstart', moveButton);
 
     function updateTimer() {
         const landingDate = new Date("Feb 14, 2026 11:30:00").getTime();
@@ -234,7 +252,7 @@
         const audio = new Audio('https://www.bensound.com/bensound-music/bensound-love.mp3');
         audio.loop = true;
         audio.volume = 0.4;
-        audio.play().catch(e => console.log("Audio play blocked until interaction"));
+        audio.play().catch(e => console.log("Audio blocked"));
     }
 
     function acceptInvitation() {
